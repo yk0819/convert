@@ -38,11 +38,11 @@ public class EntrustStorageFile {
 		String[] fileList = dir.list();	// all list
 		String[] fileFilterList; // filter list
 
+		List<List<String>> iccidList = new ArrayList<List<String>>();
+		List<List<String>> imeiList = new ArrayList<List<String>>();
+
 		// 경로 안에 있는 파일 이름의 리스트를 반환
 		for(int i = 0; i < fileList.length; i++) {
-
-			List<List<String>> iccidList = new ArrayList<List<String>>();
-			List<List<String>> imeiList = new ArrayList<List<String>>();
 			
 			if(!fileList[i].endsWith("_1.nst")) { // 아직 처리되지 않은 파일
 				fileFilterList = fileList;
@@ -82,7 +82,7 @@ public class EntrustStorageFile {
 						imeiList.add(inImeiList); // 확인한 후 반복문 안에 넣어주어야 빈배열이 생기지 않음..
 					} else {
 
-						String check = msn.substring(0,3); // 0200인 경우, 앞에 020이 짤리고 012가 된다
+						String check = msn.substring(0,3); // 0200인 경우, 앞에 020이 짤리고 0..가 된다
 						if(!check.equals("090") && !check.equals("080") && !check.equals("070")) {
 							msn = "020" + msn; // 01293039160 -> 02001293039160
 						}

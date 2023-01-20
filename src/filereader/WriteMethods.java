@@ -12,7 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class WriteMethods {
 	
 	// methods
-	public void excelWriterIMEI(String filePath, List<List<String>> imeiList) {
+	public void excelWriterIMEI(String filePath, List<List<String>> imeiList) { // 파일경로와 리스트를 받는다
 		
 		XSSFWorkbook workbook = null; // file
 		XSSFSheet sheet = null; // sheet
@@ -25,7 +25,7 @@ public class WriteMethods {
 			
 			row = sheet.createRow(0);
 			cell = row.createCell(0);
-			cell.setCellValue("IMEI");
+			cell.setCellValue("IMEI"); // 0.0에 셀 객체를 생성
 			
 			cell = row.createCell(1);
 			cell.setCellValue("商品コード");
@@ -43,11 +43,11 @@ public class WriteMethods {
 			cell.setCellValue("出荷日");
 			
 			// 반복문으로 iemi의 사이즈만큼 배열 값을 넣는다
-			for(int i = 0; i < imeiList.size(); i++) {
-				List<String> arr = imeiList.get(i);
-				row = sheet.createRow(i+1);
-
-				for(int j = 0; j < arr.size(); j++) {
+			for(int i = 0; i < imeiList.size(); i++) { // 행
+				List<String> arr = imeiList.get(i); // list in list
+				row = sheet.createRow(i+1); // index 1부터 입력
+				// 행을 다 채웠다면 다음 열로 이동하여 행을 읽어온다
+				for(int j = 0; j < arr.size(); j++) { // 열의 값만큼 돈다
 					cell = row.createCell(j);
 					cell.setCellValue(arr.get(j));
 				}

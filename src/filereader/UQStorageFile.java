@@ -38,18 +38,19 @@ public class UQStorageFile {
 		dir = new File(directory);
 		String[] fileList = dir.list();	// all list
 		String[] fileFilterList; // filter list
+
+		List<List<String>> iccidList = new ArrayList<List<String>>();
+		List<List<String>> imeiList = new ArrayList<List<String>>();
 	
 		// 경로 안에 있는 파일 이름의 리스트를 반환
 		for(int i = 0; i < fileList.length; i++) {
 	
-			List<List<String>> iccidList = new ArrayList<List<String>>();
-			List<List<String>> imeiList = new ArrayList<List<String>>();
-			
+			// _1 이 붙은 파일은 처리가 된 파일이므로 그에 해당하지 않는 파일을 필터링
 			if(!fileList[i].endsWith("_1.wst") && !fileList[i].endsWith("_iccid.xlsx") && !fileList[i].endsWith("_imei.xlsx")) { // 아직 처리되지 않은 파일
 				fileFilterList = fileList;
 				System.out.println("file: " + fileFilterList[i]); // 지역으로 인식됨
 				
-				File file = new File(directory + fileFilterList[i]);
+				File file = new File(directory + fileFilterList[i]); // c:/dev/file/..filename.wst를 읽어옴
 				FileReader reader = new FileReader(file);
 				BufferedReader br = new BufferedReader(reader);
 				
@@ -57,9 +58,11 @@ public class UQStorageFile {
 				
 				while((line = br.readLine()) != null) { // 한줄씩 읽어옴, 라인만큼 루프한다
 					
+					// list in list
 					List<String> inIccidList = new ArrayList<String>();
 					List<String> inImeiList = new ArrayList<String>();
 	
+					// line cut
 					recodeCode = line.substring(0,1);
 					iccid = line.substring(1,20); // 1~20 미만
 					imsi = line.substring(20,35);
@@ -75,8 +78,8 @@ public class UQStorageFile {
 					String phoneNumber = msn.trim();
 
 					// 루프를 돌때마다 해당 값을 찾아내서 저장
-					if(iccid.replace(" ", "").length() == 0) { // " "를 ""으로 없앤다. 공백을 아예 없앤뒤 iccid의 길이가 0과 같다면
-						inImeiList.add(imei); // iccid는 존재하지 않으므로 imei 리스트에 넣는다
+					if(iccid.replace(" ", "").length() == 0) { // " "를 ""으로 없앤다. 공백을 아예 없앤뒤 ICCID의 길이가 0과 같다면
+						inImeiList.add(imei); // ICCID는 존재하지 않으므로 IMEI리스트에 넣는다
 						inImeiList.add(productCode);
 						inImeiList.add(orderNumber); // 공백
 						inImeiList.add(orderBranchNumber);
@@ -97,12 +100,12 @@ public class UQStorageFile {
 				} // 한줄 루프 끝, 다시 올라가서 다음 라인 읽어오기
 				// 라인을 전부 다 읽어오면 하나의 파일을 처리한 것으로 밑에 로직이 실행된다
 
-				// iemi, iccid list created
+				// IMEI, ICCID list created
 				String filename = fileFilterList[i].substring(0, 17); // 확장자명을 제외한 파일명
 				writeMethods.excelWriterIMEI(directory + filename + "_imei.xlsx", imeiList);
 				writeMethods.excelWriterICCID(directory + filename + "_iccid.xlsx", iccidList);
-	
-				reader.close();
+
+				reader.close(); // 닫아주지 않으면 파일이 열린 상태가 되서 접근이 안된다
 				
 				// Files.move
 				try {
